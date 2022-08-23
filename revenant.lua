@@ -1,6 +1,7 @@
 local library = {}
 library.Flags = {}
 library.DefaultColor = Color3.fromRGB(56, 207, 154)
+library.YSpacing = 38
 
 local Players = game:GetService("Players")
 local Player = Players.LocalPlayer
@@ -126,18 +127,29 @@ notificationText:Destroy()
 end)()
 end
 
-local Request = syn and syn.request or http and http.request or http_request or request or httprequest
+local request = syn and syn.request or http and http.request or http_request or request or httprequest
 local getcustomasset = getcustomasset or getsynasset
+local isfolder = isfolder or syn_isfolder or is_folder
+local makefolder = makefolder or make_folder or createfolder or create_folder
 
 if not isfolder("Revenant") then
     makefolder("Revenant")
-    local Circle = Request({
+    local Circle = request({
 	Url = "https://github.com/Rain-Design/Libraries/blob/main/Icon/Circle.png?raw=true",
 	Method = "GET"
 	})
 	writefile("Revenant/Circle.png", Circle.Body)
 	library:Notification({
-        Text = "Downloaded Toggle Asset.",
+        Text = "Downloaded Toggle Circle Asset.",
+        Duration = 3
+    })
+	local Collapse = request({
+	Url = "https://github.com/Rain-Design/Libraries/blob/main/Icon/CollapseArrow.png?raw=true",
+	Method = "GET"
+	})
+	writefile("Revenant/Collapse.png", Collapse.Body)
+	library:Notification({
+        Text = "Downloaded Collapse Asset.",
         Duration = 3
     })
 end
@@ -248,17 +260,29 @@ itemContainer.Parent = backgroundFrame
 
 itemContainer.ChildAdded:Connect(function(v)
     if v.ClassName ~= "UIListLayout" then
-    backgroundFrame.Size = UDim2.new(0,225,0,itemContainer.Size.Y.Offset + 38)
-    itemContainer.Size = UDim2.new(0,225,0,itemContainer.Size.Y.Offset + 38)
-    BackgroundSize = BackgroundSize + 38
+        if v.Name ~= "Slider" then
+            backgroundFrame.Size = UDim2.new(0,225,0,itemContainer.Size.Y.Offset + library.YSpacing)
+            itemContainer.Size = UDim2.new(0,225,0,itemContainer.Size.Y.Offset + library.YSpacing)
+            BackgroundSize = BackgroundSize + library.YSpacing
+        else
+            backgroundFrame.Size = UDim2.new(0,225,0,itemContainer.Size.Y.Offset + 38)
+            itemContainer.Size = UDim2.new(0,225,0,itemContainer.Size.Y.Offset + 38)
+            BackgroundSize = BackgroundSize + 38
+        end
     end
 end)
 
 itemContainer.ChildRemoved:Connect(function(v)
     if v.ClassName ~= "UIListLayout" then
-    backgroundFrame.Size = UDim2.new(0,225,0,itemContainer.Size.Y.Offset - 38)
-    itemContainer.Size = UDim2.new(0,225,0,itemContainer.Size.Y.Offset - 38)
-    BackgroundSize = BackgroundSize - 38
+        if v.Name ~= "Slider" then
+            backgroundFrame.Size = UDim2.new(0,225,0,itemContainer.Size.Y.Offset - library.YSpacing)
+            itemContainer.Size = UDim2.new(0,225,0,itemContainer.Size.Y.Offset - library.YSpacing)
+            BackgroundSize = BackgroundSize - library.YSpacing
+        else
+            backgroundFrame.Size = UDim2.new(0,225,0,itemContainer.Size.Y.Offset - 38)
+            itemContainer.Size = UDim2.new(0,225,0,itemContainer.Size.Y.Offset - 38)
+            BackgroundSize = BackgroundSize - 38
+        end
     end
 end)
 
@@ -274,7 +298,7 @@ Info.Callback = Info.Callback or function() end
 local button = Instance.new("Frame")
 button.Name = "Button"
 button.BackgroundColor3 = Color3.fromRGB(36, 36, 36)
-button.Size = UDim2.fromOffset(225, 38)
+button.Size = UDim2.fromOffset(225, library.YSpacing)
 button.Parent = itemContainer
 
 local uICorner2 = Instance.new("UICorner")
@@ -300,7 +324,7 @@ buttonTextButton.TextSize = 13
 buttonTextButton.AutoButtonColor = false
 buttonTextButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 buttonTextButton.BackgroundTransparency = 1
-buttonTextButton.Size = UDim2.fromOffset(225, 38)
+buttonTextButton.Size = UDim2.fromOffset(225, library.YSpacing)
 buttonTextButton.Parent = button
 
 local buttonTextLabel = Instance.new("TextLabel")
@@ -313,7 +337,7 @@ buttonTextLabel.TextXAlignment = Enum.TextXAlignment.Left
 buttonTextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 buttonTextLabel.BackgroundTransparency = 1
 buttonTextLabel.Position = UDim2.fromScale(0.0489, 0)
-buttonTextLabel.Size = UDim2.fromOffset(214, 38)
+buttonTextLabel.Size = UDim2.fromOffset(214, library.YSpacing)
 buttonTextLabel.Parent = button
 
 button.MouseEnter:Connect(function()
@@ -339,7 +363,7 @@ Info.OnCancel = Info.OnCancel or function() end
 local prompt = Instance.new("Frame")
 prompt.Name = "Prompt"
 prompt.BackgroundColor3 = Color3.fromRGB(36, 36, 36)
-prompt.Size = UDim2.fromOffset(225, 38)
+prompt.Size = UDim2.fromOffset(225, library.YSpacing)
 prompt.Parent = itemContainer
 
 local promptUICorner = Instance.new("UICorner")
@@ -366,27 +390,29 @@ promptTextLabel.TextXAlignment = Enum.TextXAlignment.Left
 promptTextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 promptTextLabel.BackgroundTransparency = 1
 promptTextLabel.Position = UDim2.fromScale(0.0489, 0)
-promptTextLabel.Size = UDim2.fromOffset(214, 38)
+promptTextLabel.Size = UDim2.fromOffset(214, library.YSpacing)
 promptTextLabel.Parent = prompt
 
 local cancelPromptButton = Instance.new("ImageButton")
 cancelPromptButton.Name = "CancelPromptButton"
 cancelPromptButton.Image = "http://www.roblox.com/asset/?id=6031094678"
+cancelPromptButton.AnchorPoint = Vector2.new(1,.5)
 cancelPromptButton.ImageColor3 = Color3.fromRGB(214, 214, 214)
 cancelPromptButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 cancelPromptButton.BackgroundTransparency = 1
-cancelPromptButton.Position = UDim2.fromScale(0.862, 0.263)
+cancelPromptButton.Position = UDim2.new(1, -18,0.5, 0)
 cancelPromptButton.Size = UDim2.fromOffset(17, 17)
 cancelPromptButton.Parent = prompt
 
 local confirmPromptButton = Instance.new("ImageButton")
 confirmPromptButton.Name = "ConfirmPromptButton"
 confirmPromptButton.Image = "rbxassetid://7733715400"
+confirmPromptButton.AnchorPoint = Vector2.new(1,.5)
 confirmPromptButton.ImageColor3 = Color3.fromRGB(214, 214, 214)
 confirmPromptButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 confirmPromptButton.BackgroundTransparency = 1
-confirmPromptButton.Position = UDim2.fromScale(0.75, 0.263)
-confirmPromptButton.Size = UDim2.fromOffset(17, 17)
+confirmPromptButton.Position = UDim2.new(1, -43,0.5, 0)
+confirmPromptButton.Size = UDim2.new(0, 17,0, 17)
 confirmPromptButton.Parent = prompt
 
 prompt.MouseEnter:Connect(function()
@@ -419,7 +445,7 @@ local insidelabel = {}
 local label = Instance.new("Frame")
 label.Name = "Label"
 label.BackgroundColor3 = Color3.fromRGB(36, 36, 36)
-label.Size = UDim2.fromOffset(225, 38)
+label.Size = UDim2.fromOffset(225, library.YSpacing)
 label.Parent = itemContainer
 
 local labelUICorner = Instance.new("UICorner")
@@ -446,7 +472,7 @@ labelTextLabel.TextXAlignment = Enum.TextXAlignment.Left
 labelTextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 labelTextLabel.BackgroundTransparency = 1
 labelTextLabel.Position = UDim2.fromScale(0.0489, 0)
-labelTextLabel.Size = UDim2.fromOffset(214, 38)
+labelTextLabel.Size = UDim2.fromOffset(214, library.YSpacing)
 labelTextLabel.Parent = label
 
 label.MouseEnter:Connect(function()
@@ -473,19 +499,18 @@ end
 function insidewindow:Toggle(Info)
 Info.Text = Info.Text or "Toggle"
 Info.Flag = Info.Flag or Info.Text
-Info.Default = Info.Default or false
 Info.Callback = Info.Callback or function() end
 
 local insidetoggle = {}
 
-library.Flags[Info.Flag] = Info.Default
+library.Flags[Info.Flag] = false
 
 local Toggled = false
     
 local toggle = Instance.new("Frame")
 toggle.Name = "Toggle"
 toggle.BackgroundColor3 = Color3.fromRGB(36, 36, 36)
-toggle.Size = UDim2.fromOffset(225, 38)
+toggle.Size = UDim2.fromOffset(225, library.YSpacing)
 toggle.Parent = itemContainer
 
 local uICorner = Instance.new("UICorner")
@@ -511,7 +536,7 @@ toggleTextButton.TextSize = 13
 toggleTextButton.AutoButtonColor = false
 toggleTextButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 toggleTextButton.BackgroundTransparency = 1
-toggleTextButton.Size = UDim2.fromOffset(225, 38)
+toggleTextButton.Size = UDim2.fromOffset(225, library.YSpacing)
 toggleTextButton.Parent = toggle
 
 local toggleTextLabel = Instance.new("TextLabel")
@@ -524,14 +549,15 @@ toggleTextLabel.TextXAlignment = Enum.TextXAlignment.Left
 toggleTextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 toggleTextLabel.BackgroundTransparency = 1
 toggleTextLabel.Position = UDim2.fromScale(0.0489, 0)
-toggleTextLabel.Size = UDim2.fromOffset(214, 38)
+toggleTextLabel.Size = UDim2.fromOffset(214, library.YSpacing)
 toggleTextLabel.Parent = toggle
 
 local outerFrame = Instance.new("Frame")
 outerFrame.Name = "OuterFrame"
+outerFrame.AnchorPoint = Vector2.new(1, .5)
 outerFrame.BackgroundColor3 = Color3.fromRGB(62, 62, 62)
 outerFrame.BorderSizePixel = 0
-outerFrame.Position = UDim2.fromScale(0.782, 0.263)
+outerFrame.Position = UDim2.new(1, -15, .5, 0)
 outerFrame.Size = UDim2.fromOffset(38, 17)
 outerFrame.Parent = toggle
 
@@ -550,10 +576,6 @@ innerFrame.Position = UDim2.fromOffset(3, 2)
 innerFrame.Size = UDim2.fromOffset(13, 13)
 innerFrame.Parent = outerFrame
 
-pcall(Info.Callback, Info.Default)
-innerFrame.Position = Info.Default and UDim2.new(0, 22,0, 2) or UDim2.new(0, 3,0, 2)
-outerFrame.BackgroundColor3 = Info.Default and library.DefaultColor or Color3.fromRGB(62, 62, 62)
-
 toggle.MouseEnter:Connect(function()
     fixLineToggle.BackgroundColor3 = Color3.fromRGB(44, 44, 44)
     toggle.BackgroundColor3 = Color3.fromRGB(44, 44, 44)
@@ -569,17 +591,18 @@ ToggleInfo.Bool = ToggleInfo.Bool or false
 Toggled = ToggleInfo.Bool
 library.Flags[Info.Flag] = ToggleInfo.Bool
 
-pcall(Info.Callback, ToggleInfo.Bool)
     TweenService:Create(innerFrame, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut),{Position = ToggleInfo.Bool and UDim2.new(0, 22,0, 2) or UDim2.new(0, 3,0, 2)}):Play()
     TweenService:Create(outerFrame, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut),{BackgroundColor3 = ToggleInfo.Bool and library.DefaultColor or Color3.fromRGB(62, 62, 62)}):Play()
+    pcall(Info.Callback, ToggleInfo.Bool)
 end
 
 toggleTextButton.MouseButton1Click:Connect(function()
     Toggled = not Toggled
     library.Flags[Info.Flag] = Toggled
-    pcall(Info.Callback, Toggled)
+    
     TweenService:Create(innerFrame, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut),{Position = Toggled and UDim2.new(0, 22,0, 2) or UDim2.new(0, 3,0, 2)}):Play()
     TweenService:Create(outerFrame, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut),{BackgroundColor3 = Toggled and library.DefaultColor or Color3.fromRGB(62, 62, 62)}):Play()
+    pcall(Info.Callback, Toggled)
 end)
 
 return insidetoggle
@@ -597,7 +620,7 @@ local DropdownSize = 0
 local dropdown = Instance.new("Frame")
 dropdown.Name = "Dropdown"
 dropdown.BackgroundColor3 = Color3.fromRGB(36, 36, 36)
-dropdown.Size = UDim2.fromOffset(225, 38)
+dropdown.Size = UDim2.fromOffset(225, library.YSpacing)
 dropdown.Parent = itemContainer
 
 local dropdownUICorner = Instance.new("UICorner")
@@ -624,7 +647,7 @@ dropdownButton.TextSize = 13
 dropdownButton.AutoButtonColor = false
 dropdownButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 dropdownButton.BackgroundTransparency = 1
-dropdownButton.Size = UDim2.fromOffset(225, 38)
+dropdownButton.Size = UDim2.fromOffset(225, library.YSpacing)
 dropdownButton.Parent = dropdown
 
 local dropdownText = Instance.new("TextLabel")
@@ -637,16 +660,18 @@ dropdownText.TextXAlignment = Enum.TextXAlignment.Left
 dropdownText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 dropdownText.BackgroundTransparency = 1
 dropdownText.Position = UDim2.fromScale(0.0489, 0)
-dropdownText.Size = UDim2.fromOffset(214, 38)
+dropdownText.Size = UDim2.fromOffset(214, library.YSpacing)
 dropdownText.Parent = dropdown
 
 local dropdownContainerButton = Instance.new("ImageLabel")
 dropdownContainerButton.Name = "DropdownContainerButton"
-dropdownContainerButton.Image = "rbxassetid://7733717447"
+dropdownContainerButton.Image = getcustomasset("Revenant/Collapse.png")
+dropdownContainerButton.AnchorPoint = Vector2.new(1, .5)
 dropdownContainerButton.ImageColor3 = Color3.fromRGB(129, 129, 129)
 dropdownContainerButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 dropdownContainerButton.BackgroundTransparency = 1
-dropdownContainerButton.Position = UDim2.fromScale(0.867, 0.263)
+dropdownContainerButton.Position = UDim2.new(1, -15,0.5, 0)
+dropdownContainerButton.Rotation = 180
 dropdownContainerButton.Size = UDim2.fromOffset(17, 17)
 dropdownContainerButton.Parent = dropdown
 
@@ -707,7 +732,7 @@ local Opened = false
 dropdownButton.MouseButton1Click:Connect(function()
     Opened = not Opened
     
-    TweenService:Create(dropdownContainerButton, TweenInfo.new(.1, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {Rotation = Opened and 180 or 0}):Play()
+    TweenService:Create(dropdownContainerButton, TweenInfo.new(.1, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {Rotation = Opened and 0 or 180}):Play()
     
     backgroundFrame.ClipsDescendants = false
     TweenService:Create(dropdownContainerBackground, TweenInfo.new(.15, Enum.EasingStyle.Linear, Enum.EasingDirection.Out), {Size = Opened and UDim2.new(0, 225,0,DropdownSize) or UDim2.new(0, 225, 0, 0)}):Play()
@@ -769,7 +794,7 @@ WindowOpened:GetPropertyChangedSignal("Value"):Connect(function()
     if not WindowOpened.Value and dropdownContainerBackground.Visible then
     Opened = false
     
-    dropdownContainerButton.Rotation = 0
+    dropdownContainerButton.Rotation = 180
     
     dropdownContainerBackground.Size = UDim2.new(0,225,0,0)
     dropdownContainer.Size = UDim2.new(0,225,0,0)
@@ -784,7 +809,7 @@ dropdownButtonTextButton.MouseButton1Click:Connect(function()
     
     Opened = false
     
-    TweenService:Create(dropdownContainerButton, TweenInfo.new(.15, Enum.EasingStyle.Linear, Enum.EasingDirection.Out), {Rotation = 0}):Play()
+    TweenService:Create(dropdownContainerButton, TweenInfo.new(.15, Enum.EasingStyle.Linear, Enum.EasingDirection.Out), {Rotation = 180}):Play()
     TweenService:Create(dropdownContainerBackground, TweenInfo.new(.15, Enum.EasingStyle.Linear, Enum.EasingDirection.Out), {Size = UDim2.new(0, 225, 0, 0)}):Play()
     TweenService:Create(dropdownContainer, TweenInfo.new(.15, Enum.EasingStyle.Linear, Enum.EasingDirection.Out), {Size = UDim2.new(0, 225, 0, 0)}):Play()
     dropdownFixLine1.Visible = false
@@ -816,7 +841,7 @@ local PressKey = Info.Default
 local keybind = Instance.new("Frame")
 keybind.Name = "Keybind"
 keybind.BackgroundColor3 = Color3.fromRGB(36, 36, 36)
-keybind.Size = UDim2.fromOffset(225, 38)
+keybind.Size = UDim2.fromOffset(225, library.YSpacing)
 keybind.Parent = itemContainer
 
 local keybindUICorner = Instance.new("UICorner")
@@ -842,7 +867,7 @@ keybindButton.TextSize = 13
 keybindButton.AutoButtonColor = false
 keybindButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 keybindButton.BackgroundTransparency = 1
-keybindButton.Size = UDim2.fromOffset(225, 38)
+keybindButton.Size = UDim2.fromOffset(225, library.YSpacing)
 keybindButton.Parent = keybind
 
 local keybindTextLabel = Instance.new("TextLabel")
@@ -855,15 +880,16 @@ keybindTextLabel.TextXAlignment = Enum.TextXAlignment.Left
 keybindTextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 keybindTextLabel.BackgroundTransparency = 1
 keybindTextLabel.Position = UDim2.fromScale(0.0489, 0)
-keybindTextLabel.Size = UDim2.fromOffset(214, 38)
+keybindTextLabel.Size = UDim2.fromOffset(214, library.YSpacing)
 keybindTextLabel.Parent = keybind
 
 local keybindFixHolder = Instance.new("Frame")
 keybindFixHolder.Name = "KeybindFixHolder"
+keybindFixHolder.AnchorPoint = Vector2.new(1, .5)
 keybindFixHolder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 keybindFixHolder.BackgroundTransparency = 1
-keybindFixHolder.Position = UDim2.fromScale(0, 0.263)
-keybindFixHolder.Size = UDim2.fromOffset(214, 17)
+keybindFixHolder.Position = UDim2.new(1, -15,0.5, 0)
+keybindFixHolder.Size = UDim2.fromOffset(162, 17)
 keybindFixHolder.Parent = keybind
 
 local keybindHolder = Instance.new("Frame")
@@ -1125,12 +1151,13 @@ windowText.Parent = topbar
 
 local close = Instance.new("ImageButton")
 close.Name = "Close"
-close.Image = "rbxassetid://7733717447"
+close.Image = getcustomasset("Revenant/Collapse.png")
 close.Active = true
 close.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 close.BackgroundTransparency = 1
 close.Position = UDim2.fromScale(0.876, 0.263)
 close.Selectable = false
+close.Rotation = 180
 close.Size = UDim2.fromOffset(17, 17)
 close.Parent = topbar
 
@@ -1139,7 +1166,7 @@ close.MouseButton1Click:Connect(function()
     
     backgroundFrame.ClipsDescendants = WindowOpened.Value and false or true
     TweenService:Create(backgroundFrame, TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {Size = WindowOpened.Value and UDim2.new(0, 225, 0, BackgroundSize) or UDim2.new(0, 225, 0, 0)}):Play()
-    TweenService:Create(close, TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {Rotation = WindowOpened.Value and 0 or 180}):Play()
+    TweenService:Create(close, TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {Rotation = WindowOpened.Value and 180 or 0}):Play()
 end)
 
 return insidewindow
