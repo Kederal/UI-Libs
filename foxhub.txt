@@ -222,7 +222,7 @@ do
 
     -- new classes
 
-    function library.new(title)
+    function library.new(title, wtfkederaldaddy)
         local container = utility:Create("ScreenGui", {
             Name = title,
             Parent = game.CoreGui
@@ -282,7 +282,7 @@ do
                         Size = UDim2.new(0,70,0,70),
                         ZIndex = 5,
                         ImageColor3 = Color3.new(1,1,1),
-                        Image = "http://www.roblox.com/asset/?id=8631982009",
+                        Image = "http://www.roblox.com/asset/?id=" .. wtfkederaldaddy,
                 
                     }),
             
