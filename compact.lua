@@ -1646,7 +1646,7 @@ end
 return library
 
 --[[
-local UI = loadstring(game:HttpGet("https://raw.githubusercontent.com/kederal/UI-Libs/main/compact.txt"))()
+local UI = loadstring(game:HttpGet("https://raw.githubusercontent.com/kederal/UI-Libs/main/compact.lua"))()
 UI = UI.init("Showcase", "v1.0.0", "SHOWCASE")
 
 local AimOne, AimTwo = UI:AddTab("Aim", "Silent Aim") do
