@@ -83,7 +83,7 @@ end
 -- Functions
 
 local ScreenGui = SelfModules.UI.Create("ScreenGui", {
-	Name = "Vynixius UI Library",
+	Name = "script.gg",
 	ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
 })
 
